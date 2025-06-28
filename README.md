@@ -26,7 +26,7 @@ Pensé pour les passionnés du BTP, les étudiants, les architectes et les curie
 | Backend | Laravel 12 |
 | Base de données | MySQL |
 | Bundler | Vite |
-| Authentification | Laravel Breeze |
+| Authentification | Laravel Sanctum |
 | Hébergement | Camoo Hosting (version de test 30 jours) |
 
 ---
