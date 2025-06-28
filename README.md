@@ -27,7 +27,6 @@ Pensé pour les passionnés du BTP, les étudiants, les architectes et les curie
 | Base de données | MySQL |
 | Bundler | Vite |
 | Authentification | Laravel Sanctum |
-| Hébergement | Camoo Hosting (version de test 30 jours) |
 
 ---
 
