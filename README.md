@@ -87,11 +87,6 @@ Développé par Stael DJUNE
 🔗 https://www.linkedin.com/in/dj-star-info-b34669357/
 🤝 Contribution
 
-Les pull requests sont les bienvenues !
-Tu peux forker le repo, créer une branche et proposer de nouvelles fonctionnalités, des correctifs ou des améliorations de l’UX/UI.
-
-    💡 Civil Design est bien plus qu’un site : c’est un pont entre la technologie et le génie civil, une solution locale pour des projets professionnels de qualité.
-
 
 
 
