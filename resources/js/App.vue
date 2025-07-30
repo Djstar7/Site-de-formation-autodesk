@@ -3,5 +3,5 @@
 </template>
 
 <script setup>
-import MainLayout from './Layouts/MainLayout.vue';
+import MainLayout from './custom/layouts/MainLayout.vue'
 </script>

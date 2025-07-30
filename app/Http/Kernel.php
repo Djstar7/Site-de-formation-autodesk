@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
-        // middleware nommés (auth, verified, etc.)
+    // ...
+        'admin' => \App\Http\Middleware\IsAdmin::class,
     ];
 }
