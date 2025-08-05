@@ -118,7 +118,10 @@ class UsersoneController extends Controller
             'password.min'      => 'Le mot de passe doit faire au moins 8 caractères.',
             'password.regex'    => 'Le mot de passe doit contenir 1 majuscule, 1 minuscule et 1 chiffre.',
         ]);
-
+                // Vérifier si les donnees sont valides
+        if ($request->fails()) {
+            return response()->json($request->errors(), 422); // Retourne une réponse JSON avec les erreurs de validation
+        }
         $user = UsersoneModel::where('email_usersone', $data['email'])->first();
 
         if (!$user || !Hash::check($data['password'], $user->password_usersone)) {
@@ -141,7 +144,7 @@ class UsersoneController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updateUsersone(Request $request, string $id)
+    public function updateUsersone(Request $request, $id)
     {
         $user = UsersoneModel::find($id);
 
@@ -162,24 +165,25 @@ class UsersoneController extends Controller
             'password.regex'    => 'Le mot de passe doit contenir 1 majuscule, 1 minuscule et 1 chiffre.',
             'role.required'     => 'Le rôle est requis.'
         ]);
+                // Vérifier si les donnees sont valides
+        if ($request->fails()) {
+            return response()->json($request->errors(), 422); // Retourne une réponse JSON avec les erreurs de validation
+        }
 
         // Mettre à jour les champs
-        if (isset($data['name'])) {
-            $user->name_usersone = $data['name'];
-        }
-        if (isset($data['email'])) {
-            $user->email_usersone = $data['email'];
-        }
-        if (isset($data['password'])) {
-            $user->password_usersone = Hash::make($data['password']);
-        }
-        if (isset($data['role'])) {
-            $user->role_usersone = $data['role'];
+        try{
+            $user->update([
+                'name_usersone'     => $data['name'],
+                'email_usersone'    => $data['email'],
+                'password_usersone' => Hash::make($data['password']),
+                'role_usersone'     => $data['role']
+            ]);
+            return response()->json(['message' => 'Utilisateur mis à jour avec succès.', 'user' => $user]);
+        } catch (\Exception $e) {
+            // autres erreurs
+            return response()->json(['message' => 'Erreur lors de la mise à jour.'], 500);
         }
 
-        $user->save();
-
-        return response()->json(['message' => 'Utilisateur mis à jour avec succès.', 'user' => $user]);
     }
 
     /**

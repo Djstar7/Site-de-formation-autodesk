@@ -47,16 +47,16 @@
                         Payer
                     </button>
                 </div>
-                <div v-else class="space-x-10">
+                <div class="space-x-10" v-if="!buy">
                     <a
-                        :href="`http://127.0.0.1:8000/${training.video_trainings}`"
+                        :href="`http://127.0.0.1:8000${training.video_trainings}`"
                         target="_blank"
                         class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
                     >
                         Regarder
                     </a>
                     <a
-                        :href="`http://127.0.0.1:8000/${training.video_trainings}`"
+                        :href="`http://127.0.0.1:8000${training.video_trainings}`"
                         download
                         class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
                     >

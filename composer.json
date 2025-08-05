@@ -13,6 +13,7 @@
         "laravel/sanctum": "^4.1",
         "laravel/tinker": "^2.10.1",
         "laravel/ui": "^4.6",
+        "notchpay/notchpay-php": "^2.0",
         "paypal/paypal-checkout-sdk": "^1.0"
     },
     "require-dev": {

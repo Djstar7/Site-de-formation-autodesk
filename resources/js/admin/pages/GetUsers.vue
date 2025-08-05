@@ -13,7 +13,7 @@
         </div>
 
         <!-- Tableau -->
-        <div class="overflow-x-auto">
+        <div class="overflow-y-auto  max-h-[70vh]">
             <table class="min-w-full border-separate border-spacing-y-2">
                 <thead>
                     <tr class="bg-yellow-500 text-white rounded-t-lg">
@@ -112,6 +112,7 @@
     <show-delete-modal
         :showDeleteModal="showDeleteModal"
         :pathUrl="pathName"
+        :subject="title"
         @closeModalDelete="handleDeleteConfirmed"
     />
 </template>
@@ -132,6 +133,7 @@ const errorMail = ref('')
 const errorPass = ref('')
 const errorName = ref('')
 const error = ref(null)
+const title = ref('Utilisateur')
 
 onMounted(fetchUsers)
 
@@ -139,7 +141,7 @@ async function fetchUsers() {
     try {
         const res = await fetch('/api/admin/users', {
             headers: { 
-                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
                 'authorization': `Bearer ${token}`
             },
     })
@@ -212,13 +214,23 @@ async function addUser() {
         })
         closeModal()
     } catch (err) {
-        alert('Erreur lors de l\'ajout')
+        console.log('Erreur lors de l\'ajout:', err);
     }
 }
 
 async function updateUser() {
-    verifyPattern()
-    console.log('Updating user with data:', form.value);
+        if (!form.value.name || !form.value.email) {
+        error.value = 'Tous les champs sont obligatoires.'
+        return
+    }
+    if (!/^[A-Za-z\s]+$/.test(form.value.name)) {
+        errorName.value = 'Le nom ne doit contenir que des lettres.'
+        return
+    }
+    if (!/\S+@\S+\.\S+/.test(form.value.email)) {
+        errorMail.value = 'Adresse email invalide.'
+        return
+    }
     try {
         const res = await fetch(`/api/admin/users/update/${form.value.id}`, {
             method: 'PUT',
@@ -234,14 +246,16 @@ async function updateUser() {
             })
         })
         if (!res.ok) throw new Error('Erreur lors de la modification')
-        const updatedUser = await res.json()
-        const index = users.value.findIndex(u => u.id === updatedUser.id)
+        const updatedUser = await res.json();
+
+        const index = users.value.findIndex(u => u.id === updatedUser.user.id);
         if (index !== -1) {
-            users.value[index] = updatedUser
+            users.value[index] = updatedUser.user;
         }
+
         closeModal()
     } catch (err) {
-        alert('Erreur lors de la modification')
+        console.log('Erreur lors de la modif:', err)
     }
 }
 

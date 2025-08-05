@@ -6,6 +6,9 @@ use App\Http\Controllers\Api\TrainingsController;
 use App\Http\Controllers\Api\UsersoneController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\DashboardController;
+
+Route::get('/dashboard', [DashboardController::class, 'indexDashboard']);
 
 Route::get('orders', [OrdersController::class, 'indexOrders']);
 
@@ -23,13 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('orders/store', [OrdersController::class, 'storeOrders']);
     Route::delete('orders/destroy', [OrdersController::class, 'destroyOrders']);
 
-    Route::post('pay/intierer', [PaymentController::class, 'initiateCinetpayPayment']);
-
+    // Route::post('pay/initier', [PaymentController::class, 'initiateCinetpayPayment']);
+    Route::post('pay/initier', [PaymentController::class, 'createPayment']);
+    
     Route::prefix('admin')->group(function () {
         // Dashboard
-        Route::get('/dashboard', function () {
-            return response()->json(['message' => 'Welcome to the admin dashboard']);
-        });
 
         // Users
         Route::get('/users', [UsersoneController::class, 'indexUsersone']);
@@ -39,12 +40,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Trainings
         Route::post('/trainings/store', [TrainingsController::class, 'storeTrainings']);
-        Route::put('/trainings/update/{id}', [TrainingsController::class, 'updateTrainings']);
+        Route::post('/trainings/update{id}', [TrainingsController::class, 'updateTrainings']);
         Route::delete('/trainings/destroy/{id}', [TrainingsController::class, 'destroyTrainings']);
 
         // Plans
         Route::post('/plans/store', [PlansController::class, 'storePlans']);
-        Route::put('/plans/update/{id}', [PlansController::class, 'updatePlans']);
+        Route::post('/plans/update/{id}', [PlansController::class, 'updatePlans']);
         Route::delete('/plans/destroy/{id}', [PlansController::class, 'destroyPlans']);
     });
 

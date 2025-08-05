@@ -11,8 +11,7 @@ import GetTraining from '../pages/store/GetTraining.vue';
 import Login from '../auth/Login.vue'
 import Register from '../auth/Register.vue'
 
-import PaymentForm from '../components/PaymentForm.vue';
-
+import PaymentForm from '../pages/PaymentForm.vue'
 
 
 

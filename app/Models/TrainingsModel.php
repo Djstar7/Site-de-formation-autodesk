@@ -9,4 +9,12 @@ class TrainingsModel extends Model
 {
     use HasFactory;
     protected $table = 'trainings';
+
+    protected $fillable = [
+        'title_trainings',
+        'description_trainings',
+        'software_trainings',
+        'price_trainings',
+        'video_trainings',
+    ];
 }

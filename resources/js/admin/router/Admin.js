@@ -7,6 +7,7 @@ import MainLayout from '../layouts/MainLayout.vue';
 import GetTrainings from '../pages/GetTrainings.vue'
 import GetPlans from '../pages/GetPlans.vue';
 import GetUsers from '../pages/GetUsers.vue'
+import GetOrders from '../pages/GetOrders.vue';
 
 export default[
     {
@@ -49,6 +50,11 @@ export default[
                 name: 'admin.getusers',
                 component: GetUsers
             },
+            {
+                path: 'getorders',
+                name: 'admin.getorders',
+                component: GetOrders
+            }
         ]
     }
 ]

@@ -3,9 +3,9 @@
         <div class="w-1/2">
             <img
                 v-if="plan.image_plans"
-                :src="`http://127.0.0.1:8000/${plan.image_plans}`"
+                :src="`http://127.0.0.1:8000${plan.image_plans}`"
                 alt="Plan Image"
-                class="object-contain"
+                class="object-cover w-full h-full rounded-t md:rounded-t-none md:rounded-l"
             />
         </div>
 
@@ -24,7 +24,7 @@
                     Acheter
                 </button>
                 <a
-                    :href="`http://127.0.0.1:8000/${plan.file_plans}`"
+                    :href="`http://127.0.0.1:8000${plan.file_plans}`"
                     download
                     class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
                 >

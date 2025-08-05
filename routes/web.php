@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/cinetpay/success', [PaymentController::class, 'successPayment'])->name('cinetpay.success');
 Route::post('/cinetpay/notify', [PaymentController::class, 'notificatePayment'])->name('cinetpay.notify');
 
+Route::get('/callback', function(){
+    redirect()->route('payment.callback');
+})->name('payment.callback');
 Route::get('{any}', function () {
     return view('welcome');
 })->where('any', '^(?!api).*$');

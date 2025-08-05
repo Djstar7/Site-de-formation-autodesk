@@ -13,7 +13,7 @@
         </div>
 
         <!-- Tableau -->
-        <div class="overflow-x-auto">
+        <div class="overflow-y-auto  max-h-[70vh]">
             <table class="min-w-full border-separate border-spacing-y-2">
                 <thead>
                     <tr class="bg-yellow-500 text-white rounded-t-lg">
@@ -70,24 +70,24 @@
             <form @submit.prevent="showAddModal ? addTraining() : updateTraining()">
                 <div class="mb-4">
                     <label class="block mb-1 font-semibold">Titre</label>
-                    <input v-model="form.title_trainings" type="text" class="w-full border rounded px-3 py-2"  />
+                    <input v-model="form.title" type="text" class="w-full border rounded px-3 py-2"  />
                 </div>
                 <div class="mb-4">
                     <label class="block mb-1 font-semibold">Description</label>
-                    <textarea v-model="form.description_trainings" class="w-full border rounded px-3 py-2"></textarea>
+                    <textarea v-model="form.description" class="w-full border rounded px-3 py-2"></textarea>
                 </div>
                 <div class="mb-4">
                     <label class="block mb-1 font-semibold">Logiciel</label>
-                    <input v-model="form.software_trainings" type="text" class="w-full border rounded px-3 py-2"  />
+                    <input v-model="form.software" type="text" class="w-full border rounded px-3 py-2"  />
                 </div>
                 <div class="mb-4">
                     <label class="block mb-1 font-semibold">Prix</label>
-                    <input v-model="form.price_trainings" type="number" class="w-full border rounded px-3 py-2"  />
+                    <input v-model="form.price" type="number" class="w-full border rounded px-3 py-2"  />
                 </div>
                 <div class="mb-4">
                     <label class="block mb-1 font-semibold">Vidéo</label>
                     <input @change="handleVideo" type="file" class="w-full border rounded px-3 py-2"  />
-                    <p v-if="showEditModal">Fichier actuelle: {{ form.video_trainings }}</p>
+                    <p v-if="showEditModal">Fichier actuelle: {{ form.video }}</p>
                 </div>
                 <div class="flex justify-end gap-2">
                     <button type="button" @click="closeModal" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Annuler</button>
@@ -103,6 +103,7 @@
     <show-delete-modal
         :showDeleteModal="showDeleteModal"
         :pathUrl="pathName"
+        :subject="title"
         @closeModalDelete="handleDeleteConfirmed"
     />
 </template>
@@ -117,20 +118,21 @@ const showAddModal = ref(false)
 const showEditModal = ref(false)
 const showDeleteModal = ref(false)
 const form = ref({
-    title_trainings: '',
-    description_trainings: '',
-    software_trainings: 'AutoCAD',
-    price_trainings: '',
-    video_trainings: '',
+    title: '',
+    description: '',
+    software: 'AutoCAD',
+    price: '',
+    video: '',
     id: null
 })
 let trainingToDelete = null
+const title = ref('Formation')
 
 
 const handleVideo = (event) => {
     const file = event.target.files[0]
     if (file) {
-        form.value.video_trainings = URL.createObjectURL(file)
+        form.value.video = file
     }
 }
 
@@ -155,83 +157,102 @@ function closeModal() {
     showAddModal.value = false
     showEditModal.value = false
     form.value = {
-        title_trainings: '',
-        description_trainings: '',
-        software_trainings: 'AutoCAD',
-        price_trainings: '',
-        video_trainings: '',
+        title: '',
+        description: '',
+        software: 'AutoCAD',
+        price: '',
+        video: '',
         id: null
     }
 }
 
 function editTraining(training) {
     form.value = {
-        title_trainings: training.title_trainings,
-        description_trainings: training.description_trainings,
-        software_trainings: training.software_trainings,
-        price_trainings: training.price_trainings,
-        video_trainings: training.video_trainings,
+        title: training.title_trainings,
+        description: training.description_trainings,
+        software: training.software_trainings,
+        price: training.price_trainings,
+        video: training.video_trainings,
         id: training.id
     }
     showEditModal.value = true
 }
 
 async function addTraining() {
+    const formData = new FormData();
+    formData.append('title', form.value.title);
+    formData.append('description', form.value.description);
+    formData.append('software', form.value.software);
+    formData.append('price', form.value.price);
+    
+    if (form.value.video instanceof File) {
+        formData.append('video', form.value.video);
+    }
+
+
     try {
         const res = await fetch('/api/admin/trainings/store', {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json', 
-                'authorization': `Bearer ${token}`
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
             },
-            body: JSON.stringify({
-                title_trainings: form.value.title_trainings,
-                description_trainings: form.value.description_trainings,
-                software_trainings: form.value.software_trainings,
-                price_trainings: form.value.price_trainings,
-                video_trainings: form.value.video_trainings
-            })
-        })
-        if (!res.ok) throw new Error('Erreur lors de l\'ajout')
-        const newTraining = await res.json()
-        trainings.value.push(newTraining)
-        closeModal()
+            body: formData
+        });
+
+        const contentType = res.headers.get('content-type');
+
+        if (contentType && contentType.includes('application/json')) {
+            const data = await res.json();
+            console.log('✅ Formation ajoutée :', data);
+        } else {
+            const text = await res.text();
+            console.error('❌ Erreur lors de l\'ajout (non JSON):', text);
+        }
+
+        closeModal();
     } catch (err) {
-        alert('Erreur lors de l\'ajout')
+        console.error('❌ Erreur lors de l\'ajout :', err);
     }
 }
 
+
 async function updateTraining() {
+    const formData = new FormData();
+    formData.append('_method', 'PUT'); 
+    formData.append('title', form.value.title);
+    formData.append('description', form.value.description);
+    formData.append('software', form.value.software);
+    formData.append('price', form.value.price);
+    if (form.value.video instanceof File) {
+        formData.append('video', form.value.video);
+    }
+
     try {
         const res = await fetch(`/api/admin/trainings/update/${form.value.id}`, {
-            method: 'PUT',
-            headers: { 
-                'Content-Type': 'application/json', 
+            method: 'POST', // Laravel ne supporte pas PUT avec FormData par défaut
+            headers: {
                 'authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({
-                title_trainings: form.value.title_trainings,
-                description_trainings: form.value.description_trainings,
-                software_trainings: form.value.software_trainings,
-                price_trainings: form.value.price_trainings,
-                video_trainings: form.value.video_trainings
-            })
-        })
-        if (!res.ok) throw new Error('Erreur lors de la modification')
-        const updatedTraining = await res.json()
-        const index = trainings.value.findIndex(t => t.id === updatedTraining.id)
-        if (index !== -1) {
-            trainings.value[index] = updatedTraining
-        }
-        closeModal()
+            body: formData
+        });
+
+        if (!res.ok) throw new Error(`Erreur ${res.status}: ${res.statusText}`);
+        const updated = await res.json();
+
+        const index = trainings.value.findIndex(t => t.id === updated.training.id);
+        if (index !== -1) trainings.value[index] = updated.training;
+
+        closeModal();
     } catch (err) {
-        alert('Erreur lors de la modification')
+        console.error('Erreur lors de la modification:', err);
     }
 }
+
 
 function deleteTraining(id) {
     showDeleteModal.value = true
-    pathName.value = `/api/trainings/destroy/${id}`
+    pathName.value = `/api/admin/trainings/destroy/${id}`
     trainingToDelete = id
 }
 
